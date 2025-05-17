@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Forecast</title>
+    <style>
+        /* CSS Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        nav ul li {
+            padding: 1.2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #4b6cb7;
+        }
+
+        .hero {
+            background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #4b6cb7;
+            color: white;
+            padding: 0.8rem 1.8rem;
+            margin-top: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #3a5a9c;
+        }
+
+        .forecast-form {
+            background: white;
+            padding: 2rem;
+            margin: 2rem auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .results {
+            background: white;
+            padding: 2rem;
+            margin: 2rem auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            text-align: center;
+            display: none;
+        }
+
+        .results h3 {
+            color: #4b6cb7;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 1rem 0;
+        }
+
+        .features {
+            padding: 3rem 0;
+            background: #f9f9f9;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: #4b6cb7;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>House Price Forecast</h1>
+            <p class="tagline">Accurate property price predictions powered by AI</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#forecast">Price Forecast</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Discover Your Home's Future Value</h2>
+            <p>Our advanced algorithms analyze market trends to give you the most accurate house price predictions</p>
+            <a href="#forecast" class="btn">Get Your Forecast</a>
+        </div>
+    </section>
+
+    <section id="forecast" class="forecast-form">
+        <h2>House Price Forecast Tool</h2>
+        <p>Fill in the details below to get an instant price estimate for your property</p>
+        
+        <form id="priceForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <select id="location" required>
+                        <option value="">Select a location</option>
+                        <option value="urban">Urban</option>
+                        <option value="suburban">Suburban</option>
+                        <option value="rural">Rural</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bedrooms">Number of Bedrooms</label>
+                    <select id="bedrooms" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5+">5+</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bathrooms">Number of Bathrooms</label>
+                    <select id="bathrooms" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="1.5">1.5</option>
+                        <option value="2">2</option>
+                        <option value="2.5">2.5</option>
+                        <option value="3+">3+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sqft">Square Footage</label>
+                    <input type="number" id="sqft" placeholder="e.g. 1500" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="year">Year Built</label>
+                    <input type="number" id="year" placeholder="e.g. 1990" required>
+                </div>
+                <div class="form-group">
+                    <label for="condition">Property Condition</label>
+                    <select id="condition" required>
+                        <option value="">Select</option>
+                        <option value="excellent">Excellent</option>
+                        <option value="good">Good</option>
+                        <option value="average">Average</option>
+                        <option value="fair">Fair</option>
+                        <option value="poor">Poor</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">Calculate Price</button>
+        </form>
+    </section>
+
+    <section id="results" class="results">
+        <h3>Estimated Property Value</h3>
+        <div class="price">$<span id="predictedPrice">0</span></div>
+        <p>This estimate is based on current market conditions and your property details</p>
+        <p>For a more detailed analysis, contact one of our real estate experts</p>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Why Use Our Forecasting Tool</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Market Analysis</h3>
+                    <p>Our algorithms analyze thousands of data points to provide accurate predictions based on current market trends.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-database"></i>
+                    <h3>Comprehensive Data</h3>
+                    <p>We use historical sales data, neighborhood trends, and economic indicators to improve forecast accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI-Powered</h3>
+                    <p>Machine learning models continuously learn from new data to improve prediction quality over time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 House Price Forecast. All rights reserved.</p>
+            <p>Disclaimer: Forecasts are estimates only and not a substitute for professional appraisal.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple JavaScript for demonstration
+        document.getElementById('priceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real application, this would call your forecasting API
+            // For demo, we'll generate a random price
+            const sqft = parseInt(document.getElementById('sqft').value) || 1500;
+            const bedrooms = parseInt(document.getElementById('bedrooms').value) || 2;
+            
+            // Very simple "calculation" for demo purposes
+            const basePrice = sqft * 200;
+            const bedroomAdjustment = bedrooms * 25000;
+            const randomFactor = Math.random() * 50000 + 50000;
+            
+            const estimatedPrice = Math.round(basePrice + bedroomAdjustment + randomFactor);
+            
+            // Display the result
+            document.getElementById('predictedPrice').textContent = estimatedPrice.toLocaleString();
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
